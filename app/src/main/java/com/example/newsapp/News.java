@@ -5,22 +5,22 @@ public class News {
     /**
      * Title of the News.
      */
-    private String mTitle;
+    private final String mTitle;
 
     /**
      * Location of the News.
      */
-    private String mSection;
+    private final String mSection;
 
     /**
      * Author of the News.
      */
-    private String mAuthor;
+    private final String mAuthor;
 
     /**
      * Date of the News.
      */
-    private String mDate;
+    private final String mDate;
 
     /**
      * Create a new CityCategoryItem object.

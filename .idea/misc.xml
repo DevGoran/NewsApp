@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/Goran/OneDrive/GitHub/NewsApp/app/src/main/res/layout/news_activity.xml" value="0.19655521783181357" />
+        <entry key="..\:/Users/Goran/OneDrive/GitHub/NewsApp/app/src/main/res/layout/news_list_item.xml" value="0.1621376811594203" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
