@@ -15,7 +15,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Deactivate night mode on app.
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
+        // Inflate the layout.
         setContentView(R.layout.activity_main);
 
         // Get the list of articles from {@link QueryUtils}

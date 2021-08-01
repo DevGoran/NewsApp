@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="title_text_size">16sp</dimen>
+    <dimen name="section_text_size">12sp</dimen>
+    <dimen name="author_text_size">12sp</dimen>
+    <dimen name="date_text_size">12sp</dimen>
+    <dimen name="padding_top_section">5dp</dimen>
+    <dimen name="padding_top_author_date">5dp</dimen>
+    <dimen name="padding_parent">16dp</dimen>
+</resources>
