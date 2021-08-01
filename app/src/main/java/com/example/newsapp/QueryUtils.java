@@ -50,7 +50,7 @@ public final class QueryUtils {
             // which represents a list of articles.
             JSONArray resultsArray = responseObject.getJSONArray("results");
 
-            // For each earthquake in the earthquakeArray, create an {@link Earthquake} object
+            // For each article in the resultsArray, create an {@link News} object.
             for (int i = 0; i < resultsArray.length(); i++) {
 
                 // Get a single article at position i within the list of news.
@@ -81,10 +81,10 @@ public final class QueryUtils {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash. Print a log message
             // with the message from the exception.
-            Log.e("QueryUtils", "Problem parsing the earthquake JSON results", e);
+            Log.e("QueryUtils", "Problem parsing the article JSON results", e);
         }
 
-        // Return the list of earthquakes
+        // Return the list of articles.
         return articles;
     }
 
