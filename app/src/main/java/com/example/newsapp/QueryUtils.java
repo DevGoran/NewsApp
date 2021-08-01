@@ -69,9 +69,12 @@ public final class QueryUtils {
                 // Extract the value for the key called "webPublicationDate"
                 String publicationDate = currentArticle.getString("webPublicationDate").substring(0, 10);
 
+                // Extract the value for the key called "webPublicationDate"
+                String articleUrl = currentArticle.getString("webUrl");
+
                 // Create a new {@link News} object with title, section, author,
                 // and date from the JSON response.
-                News article = new News(webTitle, sectionName, nameOfAuthor, publicationDate);
+                News article = new News(webTitle, sectionName, nameOfAuthor, publicationDate, articleUrl);
 
                 // Add the new {@link News} to the list of articles.
                 articles.add(article);

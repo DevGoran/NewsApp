@@ -3,24 +3,29 @@ package com.example.newsapp;
 public class News {
 
     /**
-     * Title of the News.
+     * Title of the News article.
      */
     private final String mTitle;
 
     /**
-     * Location of the News.
+     * Section of the News article.
      */
     private final String mSection;
 
     /**
-     * Author of the News.
+     * Author of the News article.
      */
     private final String mAuthor;
 
     /**
-     * Date of the News.
+     * When the article was published.
      */
     private final String mDate;
+
+    /**
+     * URL of the News article.
+     */
+    private final String mUrl;
 
     /**
      * Create a new CityCategoryItem object.
@@ -29,12 +34,14 @@ public class News {
      * @param section is the section the article belongs to.
      * @param author  is the author of the article.
      * @param date    is the date the article was published.
+     * @param url     is the URL of the article.
      */
-    public News(String title, String section, String author, String date) {
+    public News(String title, String section, String author, String date, String url) {
         mTitle = title;
         mSection = section;
         mAuthor = author;
         mDate = date;
+        mUrl = url;
     }
 
     /**
@@ -63,5 +70,12 @@ public class News {
      */
     public String getDate() {
         return mDate;
+    }
+
+    /**
+     * Returns the URL of the article.
+     */
+    public String getUrl() {
+        return mUrl;
     }
 }
