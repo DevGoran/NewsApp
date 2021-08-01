@@ -54,25 +54,26 @@ public final class QueryUtils {
             for (int i = 0; i < resultsArray.length(); i++) {
 
                 // Get a single article at position i within the list of news.
-                JSONObject currentEarthquake = resultsArray.getJSONObject(i);
+                JSONObject currentArticle = resultsArray.getJSONObject(i);
 
-                // Extract the value for the key called "mag"
-                String webTitle = currentEarthquake.getString("webTitle");
+                // Extract the value for the key called "webTitle"
+                String fullWebsiteTitle = currentArticle.getString("webTitle");
+                String webTitle = fullWebsiteTitle.split("\\|")[0];
 
-                // Extract the value for the key called "place"
-                String sectionName = currentEarthquake.getString("sectionName");
+                // Extract the value for the key called "sectionName"
+                String sectionName = currentArticle.getString("sectionName");
 
-                // Extract the value for the key called "time"
-                String nameOfAuthor = "test";
+                // Extract the value for the author's name.
+                String nameOfAuthor = getAuthorsName(fullWebsiteTitle);
 
-                // Extract the value for the key called "time"
-                String publicationDate = currentEarthquake.getString("webPublicationDate");
+                // Extract the value for the key called "webPublicationDate"
+                String publicationDate = currentArticle.getString("webPublicationDate").substring(0, 10);
 
-                // Create a new {@link Earthquake} object with the magnitude, location, time,
-                // and url from the JSON response.
+                // Create a new {@link News} object with title, section, author,
+                // and date from the JSON response.
                 News article = new News(webTitle, sectionName, nameOfAuthor, publicationDate);
 
-                // Add the new {@link Earthquake} to the list of earthquakes.
+                // Add the new {@link News} to the list of articles.
                 articles.add(article);
             }
 
@@ -85,5 +86,16 @@ public final class QueryUtils {
 
         // Return the list of earthquakes
         return articles;
+    }
+
+    /**
+     * Return the authors name if one is provided by the JSON response.
+     */
+    private static String getAuthorsName(String webTitle) {
+        if (!webTitle.contains("|")) {
+            return "";
+        } else {
+            return webTitle.substring(webTitle.indexOf("|") + 1).trim() + ", ";
+        }
     }
 }
