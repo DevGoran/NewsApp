@@ -53,16 +53,16 @@ public class MainActivity extends AppCompatActivity {
         // Set an item click listener on the ListView, which sends an intent to a web browser
         // to open a website with more information about the selected news.
         newsListView.setOnItemClickListener((adapterView, view, position, l) -> {
-            // Find the current news that was clicked on
+            // Find the current news that was clicked on.
             News currentENews = mAdapter.getItem(position);
 
-            // Convert the String URL into a URI object (to pass into the Intent constructor)
+            // Convert the String URL into a URI object (to pass into the Intent constructor).
             Uri newsUri = Uri.parse(currentENews.getUrl());
 
-            // Create a new intent to view the news URI
+            // Create a new intent to view the news URI.
             Intent websiteIntent = new Intent(Intent.ACTION_VIEW, newsUri);
 
-            // Send the intent to launch a new activity
+            // Send the intent to launch a new activity.
             startActivity(websiteIntent);
         });
     }
