@@ -1,9 +1,10 @@
 package com.example.newsapp;
 
-import android.annotation.SuppressLint;
+import android.app.LoaderManager;
+import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Intent;
+import android.content.Loader;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.ListView;
 
@@ -13,18 +14,19 @@ import androidx.appcompat.app.AppCompatDelegate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderCallbacks<List<News>> {
+
+    private static final int NEWS_LOADER_ID = 1;
 
     /**
-     * Adapter for the list of news
+     * Adapter for the list of news.
      */
     private NewsAdapter mAdapter;
 
     /**
-     * Sample JSON response for a query
-     * "https://content.guardianapis.com/search?q=debate&tag=politics/politics&from-date=2014-01-01&api-key=test"
+     * URL from which the data is being fetched.
      */
-    private static final String JSON_RESPONSE = "https://content.guardianapis.com/search?q=debate&tag=politics/politics&from-date=2014-01-01&api-key=test";
+    private static final String REQUEST_URL = "https://content.guardianapis.com/search?q=debate&tag=politics/politics&from-date=2014-01-01&api-key=test";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +36,13 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the layout.
         setContentView(R.layout.activity_main);
 
-        // Create an {@link AsyncTask} to perform the HTTP request to the given URL
-        // on a background thread. When the result is received on the main UI thread,
-        // then update the UI.
-        NewsAsyncTask task = new NewsAsyncTask();
-        task.execute(JSON_RESPONSE);
+        // Get a reference to the LoaderManager, in order to interact with loaders.
+        LoaderManager loaderManager = getLoaderManager();
+
+        // Initialize the loader. Pass in the int ID constant defined above and pass in null for
+        // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
+        // because this activity implements the LoaderCallbacks interface).
+        loaderManager.initLoader(NEWS_LOADER_ID, null, this);
 
         // Find a reference to the {@link ListView} in the layout.
         ListView newsListView = findViewById(R.id.list);
@@ -67,24 +71,27 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @SuppressLint("StaticFieldLeak")
-    private class NewsAsyncTask extends AsyncTask<String, Void, List<News>> {
+    @Override
+    public android.content.Loader<List<News>> onCreateLoader(int i, Bundle bundle) {
+        // Create a new loader for the given URL
+        return new NewsLoader(MainActivity.this, REQUEST_URL);
+    }
 
-        @Override
-        protected List<News> doInBackground(String... urls) {
-            return QueryUtils.fetchNewsData(urls[0]);
+    @Override
+    public void onLoadFinished(Loader<List<News>> loader, List<News> data) {
+        // Clear the adapter of previous news data.
+        mAdapter.clear();
+
+        // If there is a valid list of {@link News}s, then add them to the adapter's
+        // data set. This will trigger the ListView to update.
+        if (data != null && !data.isEmpty()) {
+            mAdapter.addAll(data);
         }
+    }
 
-        @Override
-        protected void onPostExecute(List<News> data) {
-            // Clear the adapter of previous news data.
-            mAdapter.clear();
-
-            // If there is a valid list of {@link News}s, then add them to the adapter's
-            // data set. This will trigger the ListView to update.
-            if (data != null && !data.isEmpty()) {
-                mAdapter.addAll(data);
-            }
-        }
+    @Override
+    public void onLoaderReset(Loader<List<News>> loader) {
+        // Loader reset, so we can clear out our existing data.
+        mAdapter.clear();
     }
 }
