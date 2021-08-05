@@ -7,6 +7,7 @@ import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -22,6 +23,9 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<L
      * Adapter for the list of news.
      */
     private NewsAdapter mAdapter;
+
+    /** TextView that is displayed when the list is empty */
+    private TextView mEmptyStateTextView;
 
     /**
      * URL from which the data is being fetched.
@@ -54,6 +58,9 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<L
         // so the list can be populated in the user interface
         newsListView.setAdapter(mAdapter);
 
+        mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
+        newsListView.setEmptyView(mEmptyStateTextView);
+
         // Set an item click listener on the ListView, which sends an intent to a web browser
         // to open a website with more information about the selected news.
         newsListView.setOnItemClickListener((adapterView, view, position, l) -> {
@@ -79,6 +86,9 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<L
 
     @Override
     public void onLoadFinished(Loader<List<News>> loader, List<News> data) {
+        // Set empty state text to display "No earthquakes found."
+        mEmptyStateTextView.setText(R.string.no_news);
+
         // Clear the adapter of previous news data.
         mAdapter.clear();
 
