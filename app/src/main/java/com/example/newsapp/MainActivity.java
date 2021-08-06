@@ -2,8 +2,11 @@ package com.example.newsapp;
 
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +21,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements LoaderCallbacks<List<News>> {
 
+    /**
+     * Loader ID.
+     */
     private static final int NEWS_LOADER_ID = 0;
 
     /**
@@ -43,16 +49,13 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<L
         // Inflate the layout.
         setContentView(R.layout.activity_main);
 
-        // Get a reference to the LoaderManager, in order to interact with loaders.
-        LoaderManager loaderManager = getLoaderManager();
-
-        // Initialize the loader. Pass in the int ID constant defined above and pass in null for
-        // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
-        // because this activity implements the LoaderCallbacks interface).
-        loaderManager.initLoader(NEWS_LOADER_ID, null, this);
-
         // Find a reference to the {@link ListView} in the layout.
         ListView newsListView = findViewById(R.id.list);
+
+        // Set setEmptyView on the newsListView, in order to set the empty_view String when no data is
+        // found.
+        mEmptyStateTextView = findViewById(R.id.empty_view);
+        newsListView.setEmptyView(mEmptyStateTextView);
 
         // Create a new adapter that takes an empty list of news as input.
         mAdapter = new NewsAdapter(this, new ArrayList<>());
@@ -60,11 +63,6 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<L
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface.
         newsListView.setAdapter(mAdapter);
-
-        // Set setEmptyView on the newsListView, in order to set the empty_view String when data is
-        // found.
-        mEmptyStateTextView = findViewById(R.id.empty_view);
-        newsListView.setEmptyView(mEmptyStateTextView);
 
         // Set an item click listener on the ListView, which sends an intent to a web browser
         // to open a website with more information about the selected news.
@@ -81,6 +79,21 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<L
             // Send the intent to launch a new activity.
             startActivity(websiteIntent);
         });
+
+        // Get a reference to the LoaderManager, in order to interact with loaders.
+        LoaderManager loaderManager = getLoaderManager();
+
+        // Only initialize Loader if there is an internet connection, else inform the user about that there is no internet connection.
+        if (checkInterntConnectionState()) {
+            // Initialize the loader. Pass in the int ID constant defined above and pass in null for
+            // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
+            // because this activity implements the LoaderCallbacks interface).
+            loaderManager.initLoader(NEWS_LOADER_ID, null, this);
+        } else {
+            View loadingIndicator = findViewById(R.id.loading_spinner);
+            loadingIndicator.setVisibility(View.GONE);
+            mEmptyStateTextView.setText(getString(R.string.no_internt));
+        }
     }
 
     @Override
@@ -91,12 +104,18 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<L
 
     @Override
     public void onLoadFinished(Loader<List<News>> loader, List<News> data) {
+        View loadingIndicator = findViewById(R.id.loading_spinner);
+        // Check if there is either no data or internet connection and set the appropriate value to
+        // mEmptyStateTextView.
+        if (!checkInterntConnectionState()) {
+            //state that there is no internet connection
+            mEmptyStateTextView.setText(R.string.no_internt);
+        } else if (checkInterntConnectionState()) {
+            //There is internet but list is still empty
+            mEmptyStateTextView.setText(R.string.no_news);
+        }
         // Hide loading indicator when the data has been loaded.
-        View loading = findViewById(R.id.loading_spinner);
-        loading.setVisibility(View.GONE);
-
-        // Set empty state text to display "No news found."
-        mEmptyStateTextView.setText(R.string.no_news);
+        loadingIndicator.setVisibility(View.GONE);
 
         // Clear the adapter of previous news data.
         mAdapter.clear();
@@ -112,5 +131,17 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<L
     public void onLoaderReset(Loader<List<News>> loader) {
         // Loader reset, so we can clear out our existing data.
         mAdapter.clear();
+    }
+
+    /**
+     * Check if device is connected to the internet and return a boolean value.
+     **/
+    private boolean checkInterntConnectionState() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
     }
 }
