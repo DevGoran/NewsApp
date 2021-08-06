@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -17,14 +18,16 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements LoaderCallbacks<List<News>> {
 
-    private static final int NEWS_LOADER_ID = 1;
+    private static final int NEWS_LOADER_ID = 0;
 
     /**
      * Adapter for the list of news.
      */
     private NewsAdapter mAdapter;
 
-    /** TextView that is displayed when the list is empty */
+    /**
+     * TextView that is displayed when the list is empty.
+     */
     private TextView mEmptyStateTextView;
 
     /**
@@ -51,14 +54,16 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<L
         // Find a reference to the {@link ListView} in the layout.
         ListView newsListView = findViewById(R.id.list);
 
-        // Create a new adapter that takes an empty list of news as input
+        // Create a new adapter that takes an empty list of news as input.
         mAdapter = new NewsAdapter(this, new ArrayList<>());
 
         // Set the adapter on the {@link ListView}
-        // so the list can be populated in the user interface
+        // so the list can be populated in the user interface.
         newsListView.setAdapter(mAdapter);
 
-        mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
+        // Set setEmptyView on the newsListView, in order to set the empty_view String when data is
+        // found.
+        mEmptyStateTextView = findViewById(R.id.empty_view);
         newsListView.setEmptyView(mEmptyStateTextView);
 
         // Set an item click listener on the ListView, which sends an intent to a web browser
@@ -86,7 +91,11 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<L
 
     @Override
     public void onLoadFinished(Loader<List<News>> loader, List<News> data) {
-        // Set empty state text to display "No earthquakes found."
+        // Hide loading indicator when the data has been loaded.
+        View loading = findViewById(R.id.loading_spinner);
+        loading.setVisibility(View.GONE);
+
+        // Set empty state text to display "No news found."
         mEmptyStateTextView.setText(R.string.no_news);
 
         // Clear the adapter of previous news data.

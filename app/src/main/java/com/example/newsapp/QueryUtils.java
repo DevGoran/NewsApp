@@ -23,7 +23,7 @@ import java.util.List;
 public final class QueryUtils {
 
     /**
-     * Tag for the log messages
+     * Tag for the log messages.
      */
     public static final String LOG_TAG = QueryUtils.class.getSimpleName();
 
@@ -36,7 +36,7 @@ public final class QueryUtils {
     }
 
     /**
-     * Query the USGS dataset and return an {@link News} object to represent a single article.
+     * Query the dataset and return an {@link News} object to represent a single article.
      */
     public static List<News> fetchNewsData(String requestUrl) {
         // Create URL object
@@ -50,13 +50,13 @@ public final class QueryUtils {
             Log.e(LOG_TAG, "Error closing input stream", e);
         }
 
-        //Extract relevant fields from the JSON response and create an {@link Event} object and
-        // Return the {@link Event}
+        // Extract relevant fields from the JSON response and create an {@link Event} object and
+        // return the {@link Event}.
         return extractFeatureFromJson(jsonResponse);
     }
 
     /**
-     * Returns new URL object from the given string URL.
+     * Returns a new URL object from the given string URL.
      */
     private static URL createUrl(String stringUrl) {
         URL url = null;
@@ -132,16 +132,15 @@ public final class QueryUtils {
      * parsing a JSON response.
      */
     public static ArrayList<News> extractFeatureFromJson(String newsJSON) {
-
         // Create an empty ArrayList that we can start adding articles to.
         ArrayList<News> articles = new ArrayList<>();
 
-        // Try to parse the SAMPLE_JSON_RESPONSE. If there's a problem with the way the JSON
+        // Try to parse the data. If there's a problem with the way the JSON
         // is formatted, a JSONException exception object will be thrown.
         // Catch the exception so the app doesn't crash, and print the error message to the logs.
         try {
 
-            // Create a JSONObject from the SAMPLE_JSON_RESPONSE string
+            // Create a JSONObject from the newsJSON string
             JSONObject baseJsonResponse = new JSONObject(newsJSON);
 
             // Extract the JSONObject associated with the key called "response".
@@ -157,24 +156,24 @@ public final class QueryUtils {
                 // Get a single article at position i within the list of news.
                 JSONObject currentArticle = resultsArray.getJSONObject(i);
 
-                // Extract the value for the key called "webTitle"
+                // Extract the value for the key called "webTitle".
                 String fullWebsiteTitle = currentArticle.getString("webTitle");
                 String webTitle = fullWebsiteTitle.split("\\|")[0];
 
-                // Extract the value for the key called "sectionName"
+                // Extract the value for the key called "sectionName".
                 String sectionName = currentArticle.getString("sectionName");
 
                 // Extract the value for the author's name.
                 String nameOfAuthor = getAuthorsName(fullWebsiteTitle);
 
-                // Extract the value for the key called "webPublicationDate"
+                // Extract the value for the key called "webPublicationDate".
                 String publicationDate = currentArticle.getString("webPublicationDate").substring(0, 10);
 
-                // Extract the value for the key called "webPublicationDate"
+                // Extract the value for the key called "webUrl".
                 String articleUrl = currentArticle.getString("webUrl");
 
-                // Create a new {@link News} object with title, section, author,
-                // and date from the JSON response.
+                // Create a new {@link News} object with title, section, author, date
+                // and URL from the JSON response.
                 News article = new News(webTitle, sectionName, nameOfAuthor, publicationDate, articleUrl);
 
                 // Add the new {@link News} to the list of articles.
@@ -196,6 +195,8 @@ public final class QueryUtils {
      * Return the authors name if one is provided by the JSON response.
      */
     private static String getAuthorsName(String webTitle) {
+        // Checks whether the webTitle contains a vertical slash "|" or not. If it doesn't contain one,
+        // return an empty String, since no author is available. Else, extract the author as a sub string and return it.
         if (!webTitle.contains("|")) {
             return "";
         } else {

@@ -1,5 +1,8 @@
 package com.example.newsapp;
 
+/**
+ * Custom class for news articles.
+ */
 public class News {
 
     /**
