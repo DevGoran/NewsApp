@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<L
     /**
      * URL from which the data is being fetched.
      */
-    private static final String REQUEST_URL = "https://content.guardianapis.com/search?q=debate&tag=politics/politics&from-date=2014-01-01&api-key=test";
+    private static final String REQUEST_URL = "https://content.guardianapis.com/search?";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,8 +98,20 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<L
 
     @Override
     public android.content.Loader<List<News>> onCreateLoader(int i, Bundle bundle) {
-        // Create a new loader for the given URL
-        return new NewsLoader(MainActivity.this, REQUEST_URL);
+        // parse breaks apart the URI string that's passed into its parameter.
+        Uri baseUri = Uri.parse(REQUEST_URL);
+
+        // buildUpon prepares the baseUri that we just parsed so we can add query parameters to it.
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+
+        // Append query parameter and its value.
+        uriBuilder.appendQueryParameter("q", "debate");
+        uriBuilder.appendQueryParameter("tag", "politics/politics");
+        uriBuilder.appendQueryParameter("from-date", "2014-01-01");
+        uriBuilder.appendQueryParameter("api-key", "test");
+
+        // Create a new loader for the given URL.
+        return new NewsLoader(this, uriBuilder.toString());
     }
 
     @Override
